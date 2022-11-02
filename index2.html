@@ -1,0 +1,49 @@
+<html>
+<head>
+	<script type="text/javascript" src="editor.js"></script>
+</head>
+<body style='width:100%; height:100%'>
+<canvas id='mycanvas' width='1920' height='1080' style='border: 1px solid'></canvas>
+<br/>
+<input type="text" id="posx" placeholder="X Position">
+<input type="text" id="posy" placeholder="Y Position">
+<button id="addnode">Add Node</button>
+<script>
+var count = 1;
+let redraw = function(){
+	console.log(count);
+	count += 1;
+}
+var stt = new Editor(document.getElementById('mycanvas'));
+document.getElementById('addnode').onclick = function() {
+	stt.addNode(parseInt(document.getElementById('posx').value),
+	parseInt(document.getElementById('posy').value), 40, 40);
+}
+// stt.registerGlobalRedraw(redraw);
+// stt.updateState();
+stt.run();
+// stt.addNode();
+// stt.addNode(100,300);
+// stt.addNode(100,300);
+// stt.addNode(200,400,100,100, 1, 1);
+// stt.addNode(220,420,100,100, 2, 2);
+
+function runTest(gh) {
+	let i = 0;
+	let itr = 1000;
+	while(i < itr) {
+		let pos_x = Math.floor(Math.random() * 1920);
+		let pos_y = Math.floor(Math.random() * 1080);
+		let size_x = 60 + Math.floor(Math.random() * 60);
+		let size_y = 60 + Math.floor(Math.random() * 60);
+		let in_nodes = Math.floor(Math.random() * 4);
+		let out_nodes = Math.floor(Math.random() * 4);
+		gh.addNode(pos_x,pos_y,size_x,size_y,in_nodes,out_nodes);
+		i += 1;
+	}
+}
+
+// runTest(stt);
+</script>
+</body>
+</html>
