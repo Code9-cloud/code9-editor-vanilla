@@ -60,7 +60,8 @@ class EditorNode{
 // TODO: Build Command pipeline, build save ability.
 class Editor {
     MIN_ZOOM = 1;
-    MAX_ZOOM = 4;
+    MAX_ZOOM = 16;
+    BASE_GRID_STEP = 20;
     interval = 1;
     redrawing = false;
     bg_color = 'white';
@@ -282,6 +283,69 @@ class Editor {
             this.context.stroke();        }
     }
 
+    drawHorizontalLine(pos_y,start_x,end_x,itr){
+        let stroke_color = "grey";
+        if(itr % 8 === 0){
+            stroke_color = "black";
+        }
+        this.context.beginPath();
+        this.context.moveTo((start_x + this.graph_offset_x) * this.zoom_scale, (pos_y + this.graph_offset_y) * this.zoom_scale);
+        this.context.lineTo((end_x + this.graph_offset_x) * this.zoom_scale, (pos_y + this.graph_offset_y) * this.zoom_scale);
+        this.context.strokeStyle = stroke_color;
+        this.context.lineWidth = 0.5;
+        this.context.stroke();
+    }
+
+    drawHorizontalGridLines(start_x,start_y,end_x,end_y,step_size){
+        let itr = 0;
+        let i = start_y;
+        while(i <= end_y){
+            this.drawHorizontalLine(i,start_x,end_x,itr);
+            itr += 1;
+            i += step_size;
+        }
+    }
+
+    drawVerticalLine(pos_x,start_y,end_y,itr){
+        let stroke_color = "grey";
+        if(itr % 8 === 0){
+            stroke_color = "black";
+        }
+        this.context.beginPath();
+        this.context.moveTo((pos_x + this.graph_offset_x) * this.zoom_scale, (start_y + this.graph_offset_y) * this.zoom_scale);
+        this.context.lineTo((pos_x + this.graph_offset_x) * this.zoom_scale, (end_y + this.graph_offset_y) * this.zoom_scale);
+        this.context.strokeStyle = stroke_color;
+        this.context.lineWidth = 0.5;
+        this.context.stroke();
+    }
+
+    drawVerticalGridLines(start_x,start_y,end_x,end_y,step_size){
+        let itr = 0;
+        let i = start_x;
+        while(i <= end_x){
+            this.drawVerticalLine(i,start_y,end_y,itr);
+            itr += 1;
+            i += step_size;
+        }
+    }
+
+    drawBoundedGrid(start_x,start_y,end_x,end_y, step_size) {
+        this.drawHorizontalGridLines(start_x,start_y,end_x,end_y,step_size);
+        this.drawVerticalGridLines(start_x,start_y,end_x,end_y,step_size);
+    }
+
+    drawGrid() {
+        let step_size = this.BASE_GRID_STEP;
+        let target_step_size = this.BASE_GRID_STEP / this.zoom_scale;
+        while(2 * step_size < target_step_size)
+            step_size *= 2;
+        let start_x = Math.floor(( 0 - this.graph_offset_x ) / (8 * step_size)) * (8 * step_size);
+        let end_x = Math.ceil(((this.canvas.width / this.zoom_scale) - this.graph_offset_x ) / (8 * step_size)) * (8 * step_size);
+        let start_y = Math.floor(( 0 - this.graph_offset_y ) / (8 * step_size)) * (8 * step_size);
+        let end_y = Math.ceil(((this.canvas.height / this.zoom_scale) - this.graph_offset_y ) / (8 * step_size)) * (8 * step_size);
+        this.drawBoundedGrid(start_x,start_y,end_x,end_y, step_size);
+    }
+
     drawNode(node_id) {
         let highlighted = false;
         if(this.current_highlighted === node_id && this.current_highlighted_slot === -1){
@@ -350,6 +414,7 @@ class Editor {
         // let context = this.canvas.getContext('2d');
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.canvas.style.background = this.bg_color;
+        this.drawGrid();
         this.drawAllNodes();
         if(this.is_generating_path){
             this.drawPathToCursor();
