@@ -93,6 +93,7 @@ class Editor {
     slots = {};
     slot_ids = [];
     last_slot_id = -1;
+    NODE_CORNER_RADIUS = 20;
 
     constructor(canvas_elm){
         // console.log("Here");
@@ -395,9 +396,10 @@ class Editor {
         let pos_x = (node_data['x'] + this.graph_offset_x) * this.zoom_scale;
         let pos_y = (node_data['y'] + this.graph_offset_y) * this.zoom_scale;
         this.context.beginPath();
+        this.context.roundRect(pos_x, pos_y, size_x, size_y, [this.NODE_CORNER_RADIUS * this.zoom_scale]);
         this.context.fillStyle = 'rgba(255, 255, 255, 0.5)';
-        this.context.fillRect(pos_x, pos_y, size_x, size_y);
-        this.context.rect(pos_x, pos_y, size_x, size_y);
+        this.context.fill();
+        // this.context.rect(pos_x, pos_y, size_x, size_y);
         if(highlighted)
             this.context.strokeStyle = 'yellow';
         else
