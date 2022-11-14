@@ -1,3 +1,5 @@
+import { Renderer } from "./Renderer.js";
+
 //FIXME: Need to implement node / slot deletion
 class Path {
     constructor(start_node, start_slot, end_node, end_slot) {
@@ -58,7 +60,7 @@ class EditorNode{
 }
 
 // TODO: Build Command pipeline, build save ability.
-class Editor {
+export class Editor {
     MIN_ZOOM = 1;
     MAX_ZOOM = 16;
     BASE_GRID_STEP = 20;
