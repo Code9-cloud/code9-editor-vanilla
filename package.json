@@ -1,0 +1,45 @@
+{
+  "name": "code9-editor",
+  "version": "0.0.1",
+  "description": "Code 9 Editor for graph editing",
+  "main": "index.js",
+  "watch": {
+    "build": {
+      "patterns": [
+        "src"
+      ],
+      "extensions": "js,html,css",
+      "quiet": true,
+      "delay": 2500
+    }
+  },
+  "scripts": {
+    "build": "flow-remove-types src/ -d dist/",
+    "watch": "npm-watch build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Code9-vip/code9-editor-vanilla.git"
+  },
+  "keywords": [
+    "code9",
+    "editor",
+    "flow",
+    "based",
+    "programming"
+  ],
+  "author": "Satyender Yadav",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Code9-vip/code9-editor-vanilla/issues"
+  },
+  "homepage": "https://github.com/Code9-vip/code9-editor-vanilla#readme",
+  "devDependencies": {
+    "flow-remove-types": "^2.193.0",
+    "npm-watch": "^0.11.0"
+  },
+  "watchGlobalConfig": {
+    "setMaxListeners": true
+  }
+}

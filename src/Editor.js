@@ -1,4 +1,4 @@
-import { Renderer } from "./Renderer.js";
+import { Renderer } from "./Renderer.ts";
 
 //FIXME: Need to implement node / slot deletion
 class Path {
