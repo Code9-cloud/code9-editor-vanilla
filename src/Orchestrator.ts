@@ -50,9 +50,7 @@ export default class Orchestrator {
         let now = Date.now();
         if(!this.ED.inProgress && (now - this.last_render_at > this.DRAW_INTERVAL)) {
             this.UI_STATE = OrchestratorUIState.PreRendering;
-            //TODO: Pre render here
-            // console.log("Pre render")
-            //
+            this.ED.execPreRender();
             this.last_prerender_at = Date.now();
             this.UI_STATE = OrchestratorUIState.Rendering;
             // console.log("Draw")

@@ -42,10 +42,10 @@ class GraphNode{
     slots = {};
     slot_ids = [];
     last_slot_id = -1;
-    x: Number;
-    y: Number;
-    w: Number;
-    h: Number;
+    x: number;
+    y: number;
+    w: number;
+    h: number;
     // TODO: Ensure invariant that size is enough for slots.
     constructor(pos_x,pos_y,size_x,size_y, num_in_slots = 0, num_out_slots = 0){
         let slot_radius = 10;
@@ -77,6 +77,15 @@ export default class GraphEditor {
     MAX_ZOOM = 16;
     BASE_GRID_STEP = 20;
     IS_GRID_ENABLED = true;
+    SCROLL_SPEED: number = 40;
+    last_scroll_time: number = -1;
+    SCROLL_EDGE_SIZE = 40;
+    SCROLL_EDGE_HIGHLIGHT_COLOR = 'rgb(0,255,242)'
+    HIGHLIGHT_SCROLL_EDGES = true;
+    scroll_left_edge = false;
+    scroll_right_edge = false;
+    scroll_top_edge = false;
+    scroll_bottom_edge = false;
     interval = 1;
     redrawing = false;
     bg_color = 'rgb(38,38,38)';
@@ -343,6 +352,54 @@ export default class GraphEditor {
         }
     }
 
+    handlePreRender(){
+        if(this.currently_dragging < 0){
+            this.last_scroll_time = -1;
+        }
+        if(this.currently_dragging >= 0){
+            let node_data : GraphNode = this.nodes[this.currently_dragging];
+            let top_x = ( node_data.x + this.graph_offset_x ) * this.zoom_scale;
+            let top_y = ( node_data.y + this.graph_offset_y ) * this.zoom_scale;
+            let bot_x = ( node_data.x + node_data.w + this.graph_offset_x ) * this.zoom_scale;
+            let bot_y = ( node_data.y + node_data.h + this.graph_offset_y ) * this.zoom_scale;
+            this.scroll_left_edge = top_x < this.SCROLL_EDGE_SIZE;
+            this.scroll_top_edge = top_y < this.SCROLL_EDGE_SIZE;
+            this.scroll_bottom_edge = bot_y + this.SCROLL_EDGE_SIZE > this.canvas.height;
+            this.scroll_right_edge = bot_x + this.SCROLL_EDGE_SIZE > this.canvas.width;
+            if(this.last_scroll_time !== -1 && (this.scroll_left_edge || this.scroll_right_edge || this.scroll_top_edge || this.scroll_bottom_edge)){
+                // Shift the offset
+                let now = Date.now();
+                if(this.scroll_top_edge){
+                    let y_adjust = (this.SCROLL_SPEED * (now - this.last_scroll_time)) / (1000 * this.zoom_scale);
+                    this.graph_offset_y += y_adjust;
+                    node_data.y -= y_adjust;
+                    this.drag_offset_y += y_adjust;
+                }
+                if(this.scroll_left_edge){
+                    let x_adjust = (this.SCROLL_SPEED * (now - this.last_scroll_time)) / (1000 * this.zoom_scale);
+                    this.graph_offset_x += x_adjust;
+                    node_data.x -= x_adjust;
+                    this.drag_offset_x += x_adjust;
+                }
+                if(this.scroll_bottom_edge){
+                    let y_adjust = (this.SCROLL_SPEED * (now - this.last_scroll_time)) / (1000 * this.zoom_scale);
+                    this.graph_offset_y -= y_adjust;
+                    node_data.y += y_adjust;
+                    this.drag_offset_y -= y_adjust;
+                }
+                if(this.scroll_right_edge){
+                    let x_adjust = (this.SCROLL_SPEED * (now - this.last_scroll_time)) / (1000 * this.zoom_scale);
+                    this.graph_offset_x -= x_adjust;
+                    node_data.x += x_adjust;
+                    this.drag_offset_x -= x_adjust;
+                }
+                this.last_scroll_time = now;
+            } else {
+                this.last_scroll_time = Date.now();
+            }
+        }
+    }
+
     drawVerticalLine(pos_x,start_y,end_y,itr){
         let stroke_color = "rgb(53,53,53)";
         if(itr % 8 === 0){
@@ -395,6 +452,49 @@ export default class GraphEditor {
         let start_y = Math.floor(( 0 - this.graph_offset_y ) / (8 * step_size)) * (8 * step_size);
         let end_y = Math.ceil(((this.canvas.height / this.zoom_scale) - this.graph_offset_y ) / (8 * step_size)) * (8 * step_size);
         this.drawBoundedGrid(start_x,start_y,end_x,end_y, step_size);
+    }
+
+    drawHighlightedScrollEdges() {
+        if(this.scroll_top_edge === true) {
+            let gradient = this.context.createLinearGradient(0,0,0,this.SCROLL_EDGE_SIZE);
+            gradient.addColorStop(0, this.SCROLL_EDGE_HIGHLIGHT_COLOR);
+            gradient.addColorStop(1, "rgba(255, 255, 255, 0.0)");
+            this.context.beginPath();
+            this.context.rect(0, 0, this.canvas.width, this.SCROLL_EDGE_SIZE);
+            this.context.fillStyle = gradient;
+            // this.context.lineWidth = 1;
+            this.context.fill();
+        }
+        if(this.scroll_left_edge === true) {
+            let gradient = this.context.createLinearGradient(0,0,this.SCROLL_EDGE_SIZE, 0);
+            gradient.addColorStop(0, this.SCROLL_EDGE_HIGHLIGHT_COLOR);
+            gradient.addColorStop(1, "rgba(255, 255, 255, 0.0)");
+            this.context.beginPath();
+            this.context.rect(0, 0, this.SCROLL_EDGE_SIZE, this.canvas.height);
+            this.context.fillStyle = gradient;
+            // this.context.lineWidth = 1;
+            this.context.fill();
+        }
+        if(this.scroll_bottom_edge === true) {
+            let gradient = this.context.createLinearGradient(0,this.canvas.height, 0, this.canvas.height - this.SCROLL_EDGE_SIZE);
+            gradient.addColorStop(0, this.SCROLL_EDGE_HIGHLIGHT_COLOR);
+            gradient.addColorStop(1, "rgba(255, 255, 255, 0.0)");
+            this.context.beginPath();
+            this.context.rect(0, this.canvas.height - this.SCROLL_EDGE_SIZE, this.canvas.width, this.SCROLL_EDGE_SIZE);
+            this.context.fillStyle = gradient;
+            // this.context.lineWidth = 1;
+            this.context.fill();
+        }
+        if(this.scroll_right_edge === true) {
+            let gradient = this.context.createLinearGradient(this.canvas.width,0, this.canvas.width - this.SCROLL_EDGE_SIZE, 0);
+            gradient.addColorStop(0, this.SCROLL_EDGE_HIGHLIGHT_COLOR);
+            gradient.addColorStop(1, "rgba(255, 255, 255, 0.0)");
+            this.context.beginPath();
+            this.context.rect(this.canvas.width - this.SCROLL_EDGE_SIZE, 0, this.SCROLL_EDGE_SIZE, this.canvas.height);
+            this.context.fillStyle = gradient;
+            // this.context.lineWidth = 1;
+            this.context.fill();
+        }
     }
 
     drawNode(node_id) {
@@ -469,6 +569,9 @@ export default class GraphEditor {
         this.canvas.style.background = this.bg_color;
         if(this.IS_GRID_ENABLED) {
             this.drawGrid();
+        }
+        if(this.HIGHLIGHT_SCROLL_EDGES){
+            this.drawHighlightedScrollEdges();
         }
         this.drawAllNodes();
         if(this.is_generating_path){

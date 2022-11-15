@@ -73,4 +73,12 @@ export default class EventDispatcher {
             }
         }
     }
+
+    execPreRender(){
+        try {
+            this.UI.execPreRender();
+        } finally {
+
+        }
+    }
 }

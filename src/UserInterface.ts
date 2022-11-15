@@ -17,9 +17,9 @@ export default class UserInterface {
         this.BG_STYLE = bg_style;
         this.editor = new GraphEditor(canvas);
         this.editor.run();
-        this.editor.addNode();
+        // this.editor.addNode();
         this.editor.addNode(100,300);
-        this.editor.addNode(100,300);
+        this.editor.addNode(50,400);
         this.editor.addNode(200,400,100,100, 1, 1);
         this.editor.addNode(220,420,100,100, 2, 2);
     }
@@ -43,5 +43,9 @@ export default class UserInterface {
             case GraphEventTypes.MOUSEMOVE: this.editor.handleMouseMove(ev as GraphMouseMoveEvent); break;
             case GraphEventTypes.WHEEL: this.editor.handleWheel(ev as GraphWheelEvent); break;
         }
+    }
+
+    execPreRender() {
+        this.editor.handlePreRender();
     }
 }
