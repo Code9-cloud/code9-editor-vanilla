@@ -7,4 +7,4 @@
 7. Excalidraw & Diagrams.net Integration / Export
 8. Traces / Dependency Graph Generation, allow Automation of Semantic Tests.
 9. Auto test creation.
-10. Design Patterns based graph creation. Like Polling / Pub Sub
+10. Design Patterns based graph creation. Like Polling / Pub Sub.

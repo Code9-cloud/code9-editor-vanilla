@@ -5,7 +5,9 @@ export enum GraphEventTypes {
     MOUSEDOWN,
     MOUSEUP,
     MOUSEMOVE,
-    WHEEL
+    WHEEL,
+    SIDE_PANEL_RESIZE,
+    ESC_RELEASE
 }
 
 export class GraphEvent {
@@ -55,5 +57,19 @@ export class GraphWheelEvent extends GraphEvent {
         this.mx = mx;
         this.my = my;
         this.dy = dy;
+    }
+}
+
+export class ESCReleasedEvent extends GraphEvent {
+    constructor() {
+        super(GraphEventTypes.ESC_RELEASE);
+    }
+}
+
+export class SidePanelResize extends GraphEvent {
+    w: number;
+    constructor(w) {
+        super(GraphEventTypes.SIDE_PANEL_RESIZE);
+        this.w = w;
     }
 }

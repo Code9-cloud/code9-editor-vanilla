@@ -1,4 +1,11 @@
-import {GraphMouseDownEvent, GraphMouseMoveEvent, GraphMouseUpEvent, GraphWheelEvent} from "./Event";
+import {
+    ESCReleasedEvent,
+    GraphMouseDownEvent,
+    GraphMouseMoveEvent,
+    GraphMouseUpEvent,
+    GraphWheelEvent,
+    SidePanelResize
+} from "./Event";
 
 class GraphPath {
     sn: Number;
@@ -82,6 +89,8 @@ export default class GraphEditor {
     SCROLL_EDGE_SIZE = 40;
     SCROLL_EDGE_HIGHLIGHT_COLOR = 'rgb(0,255,242)'
     HIGHLIGHT_SCROLL_EDGES = true;
+    HIGHLIGHT_FULLSCREEN = false;
+    IS_FULLSCREEN = false;
     scroll_left_edge = false;
     scroll_right_edge = false;
     scroll_top_edge = false;
@@ -121,13 +130,14 @@ export default class GraphEditor {
     context: CanvasRenderingContext2D;
 
     // Update to have multiple tabs & 1 graph per tab
-    constructor(canvas_elm){
+    EDITOR_OFFSET = {x: 0, y: 0};
+    EDITOR_SIZE = {w: 0, h: 0};
+    FULLSCREEN_SIZE = {w: 0, h: 0};
+    constructor(canvas_elm, editor_offset, editor_size){
         // console.log("Here");
         this.canvas = canvas_elm;
-        // this.canvas.onmousemove = (ev) => { this.handleMouseMove(ev) };
-        // this.canvas.onmousedown = (ev) => { this.handleMouseDown(ev) };
-        // this.canvas.onmouseup = (ev) => {this.handleMouseUp(ev) };
-        // this.canvas.onwheel = (ev) => { ev.preventDefault(); this.handleWheel(ev) };
+        this.EDITOR_OFFSET = editor_offset;
+        this.EDITOR_SIZE = editor_size;
         //TODO: Add mouse enter & leave too
         this.context = this.canvas.getContext('2d');
         // this.global_redraw = global_redraw_fn;
@@ -562,10 +572,37 @@ export default class GraphEditor {
         this.context.stroke();
     }
 
+    handleResize(ev: SidePanelResize){
+        this.EDITOR_SIZE.w += this.EDITOR_OFFSET.x - ev.w;
+        this.EDITOR_OFFSET.x = ev.w;
+    }
+
+    drawClip() {
+        this.context.beginPath();
+        this.context.rect(this.EDITOR_OFFSET.x, this.EDITOR_OFFSET.y, this.EDITOR_SIZE.w, this.EDITOR_SIZE.h);
+        this.context.clip();
+    }
+
+    drawSidePanelSplitter(){
+        this.context.beginPath();
+        this.context.lineWidth = 5;
+        let strokeGradient = this.context.createLinearGradient(this.EDITOR_OFFSET.x - 2, this.EDITOR_OFFSET.y, this.EDITOR_OFFSET.x + 2, this.EDITOR_OFFSET.y);
+        strokeGradient.addColorStop(0,'rgb(50,50,50)')
+        strokeGradient.addColorStop(0.5,'rgb(180,180,180)')
+        strokeGradient.addColorStop(1,'rgb(50,50,50)')
+        this.context.strokeStyle = strokeGradient;
+        this.context.moveTo(this.EDITOR_OFFSET.x, this.EDITOR_OFFSET.y);
+        this.context.lineTo(this.EDITOR_OFFSET.x, this.EDITOR_OFFSET.y + this.EDITOR_SIZE.h);
+        this.context.stroke();
+    }
+
     redrawCanvas() {
         // console.log(this.colors[this.count]);
         // let context = this.canvas.getContext('2d');
+        // let now = window.performance.now();
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.context.save();
+        this.drawClip();
         this.canvas.style.background = this.bg_color;
         if(this.IS_GRID_ENABLED) {
             this.drawGrid();
@@ -584,6 +621,9 @@ export default class GraphEditor {
         if(this.count === 5) {
             this.count = 0;
         }
+        this.context.restore();
+        this.drawSidePanelSplitter();
+        // console.log(window.performance.now() - now);
     }
 
     //FIXME: there should be max iteration / time without any redraws.
@@ -610,5 +650,42 @@ export default class GraphEditor {
         this.last_node_id += 1;
         this.node_ids.push(this.last_node_id);
         this.nodes[this.last_node_id] = new GraphNode(pos_x,pos_y,size_x,size_y, num_in_slots, num_out_slots);
+    }
+
+    handleEscRelease(ev: ESCReleasedEvent) {
+        console.log(this.IS_FULLSCREEN);
+        if(!this.IS_FULLSCREEN){
+            this.IS_FULLSCREEN = true;
+            this.FULLSCREEN_SIZE.w = this.canvas.width;
+            this.FULLSCREEN_SIZE.h = this.canvas.height;
+            let elem : any = this.canvas;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.mozRequestFullScreen) {
+                /* Firefox */
+                elem.mozRequestFullScreen();
+            } else if (elem.webkitRequestFullscreen) {
+                /* Chrome, Safari and Opera */
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                /* IE/Edge */
+                elem.msRequestFullscreen();
+            }
+        } else {
+            this.IS_FULLSCREEN = false;
+            const doc : any = document;
+            if (doc.exitFullscreen) {
+                doc.exitFullscreen();
+            } else if (doc.mozCancelFullScreen) {
+                /* Firefox */
+                doc.mozCancelFullScreen();
+            } else if (doc.webkitExitFullscreen) {
+                /* Chrome, Safari and Opera */
+                doc.webkitExitFullscreen();
+            } else if (doc.msExitFullscreen) {
+                /* IE/Edge */
+                doc.msExitFullscreen();
+            }
+        }
     }
 }

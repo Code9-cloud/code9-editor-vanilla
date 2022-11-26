@@ -1,27 +1,39 @@
 import GraphEditor from "./GraphEditor";
 import {
+    ESCReleasedEvent,
     GraphEvent,
     GraphEventTypes,
     GraphMouseDownEvent,
     GraphMouseMoveEvent,
     GraphMouseUpEvent,
-    GraphWheelEvent
+    GraphWheelEvent,
+    SidePanelResize
 } from "./Event";
 
+//TODO: Need to introduce menu & side panel here, this allows graph editor to remain isolated entity.
 export default class UserInterface {
     VIEWPORT_SIZE = { x : 1920, y : 1080};
     BG_STYLE = { pattern: "solid", color : 'rgb(38,38,38)'};
+    EDITOR_OFFSET = {x: 100, y: 100};
+    EDITOR_SIZE = {w: 1280, h: 800};
     editor : GraphEditor = null;
     constructor(canvas, viewport_size = { x : 1920, y : 1080}, bg_style = { pattern: "solid", color : 'rgb(38,38,38)'}) {
         this.VIEWPORT_SIZE = viewport_size;
         this.BG_STYLE = bg_style;
-        this.editor = new GraphEditor(canvas);
+        this.VIEWPORT_SIZE = viewport_size;
+        this.EDITOR_SIZE.w = this.VIEWPORT_SIZE.x - this.EDITOR_OFFSET.x;
+        this.EDITOR_SIZE.h = this.VIEWPORT_SIZE.y - this.EDITOR_OFFSET.y;
+        this.editor = new GraphEditor(canvas, this.EDITOR_OFFSET, this.EDITOR_SIZE);
         this.editor.run();
         // this.editor.addNode();
         this.editor.addNode(100,300);
         this.editor.addNode(50,400);
         this.editor.addNode(200,400,100,100, 1, 1);
         this.editor.addNode(220,420,100,100, 2, 2);
+    }
+
+    isFullScreen() {
+        return this.editor.IS_FULLSCREEN;
     }
 
     setBgStyle(bg_style){
@@ -42,6 +54,8 @@ export default class UserInterface {
             case GraphEventTypes.MOUSEUP: this.editor.handleMouseUp(ev as GraphMouseUpEvent); break;
             case GraphEventTypes.MOUSEMOVE: this.editor.handleMouseMove(ev as GraphMouseMoveEvent); break;
             case GraphEventTypes.WHEEL: this.editor.handleWheel(ev as GraphWheelEvent); break;
+            case GraphEventTypes.SIDE_PANEL_RESIZE : this.editor.handleResize(ev as SidePanelResize); break;
+            case GraphEventTypes.ESC_RELEASE : this.editor.handleEscRelease(ev as ESCReleasedEvent); break;
         }
     }
 

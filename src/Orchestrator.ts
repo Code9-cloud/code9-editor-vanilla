@@ -13,7 +13,7 @@ enum OrchestratorUIState{
 export default class Orchestrator {
     // Event Loop cycle in order [ Updating UI -> PreRender -> Drawing -> Updating UI ]
     UI_STATE = OrchestratorUIState.Halt;
-    DRAW_INTERVAL = 1;
+    DRAW_INTERVAL = 10;
     // Rendering related timestamps
     last_prerender_at = 0;
     last_render_start_at = 0;
