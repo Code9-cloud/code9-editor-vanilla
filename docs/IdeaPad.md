@@ -8,3 +8,4 @@
 8. Traces / Dependency Graph Generation, allow Automation of Semantic Tests.
 9. Auto test creation.
 10. Design Patterns based graph creation. Like Polling / Pub Sub.
+11. Graphics, Collision / Overlap & Editor Config as dependencies of elements, Make the implementation component based.

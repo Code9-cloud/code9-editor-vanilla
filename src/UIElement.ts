@@ -1,29 +1,41 @@
-export class UIElement {
-    pointOverlapsElement(p: Point) : boolean {
-        return false;
-    }
+import {RectSize} from "./Size";
+import {Shape} from "./Shape";
 
-    onHover(){
+interface HasOnHover {
+    onHover(hoverLocation: Point);
+}
 
-    }
+interface HasOnHoverExit {
+    onHoverExit();
+}
 
-    onHoverExit(){
+interface HasOnMove {
+    onMove(moveLocation: Point);
+}
 
-    }
+interface HasOnLeftClick {
+    onLeftClick();
+}
 
-    onMove(moveTo: Point){
+interface HasOnRightClick {
+    onRightClick();
+}
 
-    }
+interface HasOnWheelUp {
+    onWheelUp(wheelLocation: Point, wheelDelta: number);
+}
 
-    onClick(){
+//TODO: move this to Physics based overlap
+//TODO: Make the component like Unreal Actor, which can have multiple meshes, collision elements etc.
+export abstract class UIElement {
+    position: Point;
+    boundingSize : RectSize;
+    abstract pointOverlapsElement(p: Point) : boolean;
+}
 
-    }
-
-    onRightClick(){
-
-    }
-
-    onWheel(){
-
-    }
+// TODO: Below is not needed, an Element Group can be implemented through element class itself.
+// Invariant :- boundingSize of Group >= max(boundingSize elements)
+export abstract class UIElementGroup {
+    position: Point;
+    boundingSize : RectSize;
 }
