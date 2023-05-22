@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/fabcode_editor.iml" filepath="$PROJECT_DIR$/.idea/fabcode_editor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/code9-editor-vanilla.iml" filepath="$PROJECT_DIR$/.idea/code9-editor-vanilla.iml" />
     </modules>
   </component>
 </project>

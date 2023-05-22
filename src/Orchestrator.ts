@@ -1,6 +1,7 @@
 import UserInterface from "./UserInterface";
 import DrawingManager from "./DrawingManager";
 import EventDispatcher from "./EventDispatcher";
+import PixiUserInterface from "./PixiUserInterface";
 
 enum OrchestratorUIState{
     Init,
@@ -19,11 +20,13 @@ export default class Orchestrator {
     last_render_start_at = 0;
     last_render_at = 0;
     UI : UserInterface = null;
+    PUI : PixiUserInterface = null;
     DM : DrawingManager = null;
     ED : EventDispatcher;
-    constructor(draw_interval = 1, canvas = null) {
+    constructor(draw_interval = 1, canvas = null, document: Document) {
         this.DRAW_INTERVAL = draw_interval;
         this.UI = new UserInterface(canvas);
+        this.PUI = new PixiUserInterface(document);
         this.DM = new DrawingManager(this.UI, canvas);
         this.ED = new EventDispatcher(this.UI, canvas);
         this.ED.registerEvents();
@@ -48,6 +51,7 @@ export default class Orchestrator {
         // this.ED.execEvents();
         this.ED.processEvents = false;
         let now = Date.now();
+        // TODO: this if condition might not be correct.
         if(!this.ED.inProgress && (now - this.last_render_at > this.DRAW_INTERVAL)) {
             this.UI_STATE = OrchestratorUIState.PreRendering;
             this.ED.execPreRender();

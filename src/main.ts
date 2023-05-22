@@ -16,7 +16,7 @@ let canvas = document.getElementById('mycanvas');
 // stt.addNode(200,400,100,100, 1, 1);
 // stt.addNode(220,420,100,100, 2, 2);
 
-let orchestrator = new Orchestrator(1, canvas);
+let orchestrator = new Orchestrator(1, canvas, document);
 orchestrator.begin();
 // orchestrator.run();
 

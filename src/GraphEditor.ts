@@ -30,7 +30,7 @@ class GraphSlot {
     node: Number;
     st: Number;
     color: string;
-    constructor(pos_x,pos_y,radius, fill_color = "blue", node_id = -1) {
+    constructor(pos_x,pos_y,radius, fill_color = "#7F7", node_id = -1) {
         this.x = pos_x;
         this.y = pos_y;
         this.r = radius;
@@ -53,8 +53,10 @@ class GraphNode{
     y: number;
     w: number;
     h: number;
+    title: string;
     // TODO: Ensure invariant that size is enough for slots.
-    constructor(pos_x,pos_y,size_x,size_y, num_in_slots = 0, num_out_slots = 0){
+    constructor(title:string, pos_x,pos_y,size_x,size_y, num_in_slots = 0, num_out_slots = 0){
+        this.title = title;
         let slot_radius = 10;
         if(num_in_slots > 0){
             for (let i = 0; i < num_in_slots; i++){
@@ -208,6 +210,7 @@ export default class GraphEditor {
 
     //FIXME: Restructure to get overlap element and use logic as per overlap element & current state
     handleMouseMove(event: GraphMouseMoveEvent) {
+        // Handle overlap with suggestion box if open, don't check overlap with other entities in meantime.
         if (this.is_generating_path) {
             this.mx = (event.mx) / this.zoom_scale;
             this.my = (event.my) / this.zoom_scale;
@@ -236,6 +239,8 @@ export default class GraphEditor {
     }
 
     handleMouseDown(event: GraphMouseDownEvent) {
+        // if suggestion_box_open// Clicking outside the box should close it, and clicking inside should register with
+        // Corresponding component being overlapped
         if(this.currently_dragging < 0 && !this.is_generating_path){
             let mx = event.mx / this.zoom_scale;
             let my = event.my / this.zoom_scale;
@@ -527,6 +532,7 @@ export default class GraphEditor {
             this.context.strokeStyle = 'yellow';
         else
             this.context.strokeStyle = 'black';
+        this.context.fillText(node_data.title, pos_x, pos_y);
         this.context.stroke();
         this.drawNodeSlots(node_id);
     }
@@ -646,10 +652,10 @@ export default class GraphEditor {
     }
 
     // FIXME: use uuids or something similar for node ids
-    addNode(pos_x = 0,pos_y = 0,size_x = 100,size_y = 100, num_in_slots = 0, num_out_slots = 0) {
+    addNode(title: string, pos_x = 0,pos_y = 0,size_x = 100,size_y = 100, num_in_slots = 0, num_out_slots = 0) {
         this.last_node_id += 1;
         this.node_ids.push(this.last_node_id);
-        this.nodes[this.last_node_id] = new GraphNode(pos_x,pos_y,size_x,size_y, num_in_slots, num_out_slots);
+        this.nodes[this.last_node_id] = new GraphNode(title,pos_x,pos_y,size_x,size_y, num_in_slots, num_out_slots);
     }
 
     handleEscRelease(ev: ESCReleasedEvent) {

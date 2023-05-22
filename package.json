@@ -2,7 +2,7 @@
   "name": "code9-editor",
   "version": "0.0.1",
   "description": "Code 9 Editor for graph editing",
-  "main": "index.js",
+  "private": true,
   "watch": {
     "build": {
       "patterns": [
@@ -14,8 +14,8 @@
     }
   },
   "scripts": {
-    "build": "flow-remove-types src/ -d dist/",
-    "watch": "npm-watch build",
+    "develop": "webpack-dev-server --mode development",
+    "build": "webpack --mode production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -36,10 +36,16 @@
   },
   "homepage": "https://github.com/Code9-vip/code9-editor-vanilla#readme",
   "devDependencies": {
-    "flow-remove-types": "^2.193.0",
-    "npm-watch": "^0.11.0"
+    "html-webpack-plugin": "^5.5.1",
+    "ts-loader": "^9.4.2",
+    "webpack": "^5.83.1",
+    "webpack-cli": "^5.1.1",
+    "webpack-dev-server": "^4.15.0"
   },
   "watchGlobalConfig": {
     "setMaxListeners": true
+  },
+  "dependencies": {
+    "pixi.js": "^7.2.4"
   }
 }

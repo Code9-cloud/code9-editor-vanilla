@@ -15,9 +15,11 @@ export default class UserInterface {
     VIEWPORT_SIZE = { x : 1920, y : 1080};
     BG_STYLE = { pattern: "solid", color : 'rgb(38,38,38)'};
     EDITOR_OFFSET = {x: 100, y: 100};
-    EDITOR_SIZE = {w: 1280, h: 800};
+    //FIXME: Reduced size for testing.
+    EDITOR_SIZE = {w: 120, h: 80};
     editor : GraphEditor = null;
-    constructor(canvas, viewport_size = { x : 1920, y : 1080}, bg_style = { pattern: "solid", color : 'rgb(38,38,38)'}) {
+    //FIXME: Reduced size for testing.
+    constructor(canvas, viewport_size = { x : 120, y : 80}, bg_style = { pattern: "solid", color : 'rgb(38,38,38)'}) {
         this.VIEWPORT_SIZE = viewport_size;
         this.BG_STYLE = bg_style;
         this.VIEWPORT_SIZE = viewport_size;
@@ -26,10 +28,10 @@ export default class UserInterface {
         this.editor = new GraphEditor(canvas, this.EDITOR_OFFSET, this.EDITOR_SIZE);
         this.editor.run();
         // this.editor.addNode();
-        this.editor.addNode(100,300);
-        this.editor.addNode(50,400);
-        this.editor.addNode(200,400,100,100, 1, 1);
-        this.editor.addNode(220,420,100,100, 2, 2);
+        // this.editor.addNode("node1", 100,300);
+        // this.editor.addNode("node1",50,400);
+        // this.editor.addNode("node1",200,400,100,100, 1, 1);
+        // this.editor.addNode("node1",220,420,100,100, 2, 2);
     }
 
     isFullScreen() {
