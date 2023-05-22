@@ -1,5 +1,7 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require('path');
+const { SourceMapDevToolPlugin } = require("webpack");
+
 //    "build": "flow-remove-types src/ -d dist/",
 //    "watch": "npm-watch build",
 module.exports = {
@@ -11,6 +13,11 @@ module.exports = {
                 use: 'ts-loader',
                 exclude: /node_modules/,
             },
+            {
+                test: /\.m?js$/,
+                enforce: 'pre',
+                use: ['source-map-loader'],
+            },
         ],
     },
     resolve: {
@@ -21,6 +28,9 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
     },
     plugins: [
+        new SourceMapDevToolPlugin({
+            filename: "[file].map"
+        }),
         new HtmlWebpackPlugin({
             title: 'Code9 Editor',
             template: 'src/index.html' })

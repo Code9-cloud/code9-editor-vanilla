@@ -37,6 +37,7 @@
   "homepage": "https://github.com/Code9-vip/code9-editor-vanilla#readme",
   "devDependencies": {
     "html-webpack-plugin": "^5.5.1",
+    "source-map-loader": "^4.0.1",
     "ts-loader": "^9.4.2",
     "webpack": "^5.83.1",
     "webpack-cli": "^5.1.1",
