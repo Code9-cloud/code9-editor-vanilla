@@ -1,9 +1,9 @@
 import * as PIXI from "pixi.js";
+import {CONFIG} from "./config/config";
 import {Application, ICanvas, TilingSprite} from "pixi.js";
 
 export default class Grid {
     gridThickness: number;
-    CELL_SIZE : number = 16;
     private app: Application<ICanvas>;
     private gridSprite: TilingSprite;
     constructor(app, x, y) {
@@ -11,7 +11,7 @@ export default class Grid {
         var tmpContainer = new PIXI.Container;
         var background = new PIXI.Graphics();
         background.beginFill(0x2a2a2a);
-        var fullCellSize: number = 8 * this.CELL_SIZE;
+        var fullCellSize: number = 8 * CONFIG.CELL_SIZE;
         background.drawRect(0, 0, fullCellSize, fullCellSize);
         tmpContainer.addChild(background);
 
@@ -30,14 +30,14 @@ export default class Grid {
     }
     drawQuad(grid) {
         var gridThickness = this.gridThickness;
-        var fullCellSize = 8 * this.CELL_SIZE;
-        for (var i = 0; i < fullCellSize; i += this.CELL_SIZE) {
+        var fullCellSize = 8 * CONFIG.CELL_SIZE;
+        for (var i = 0; i < fullCellSize; i += CONFIG.CELL_SIZE) {
             grid.lineStyle(gridThickness, 0x353535)
                 .moveTo(i, 0)
                 .lineTo(i, fullCellSize);
         }
 
-        for (var i = 0; i < fullCellSize; i += this.CELL_SIZE) {
+        for (var i = 0; i < fullCellSize; i += CONFIG.CELL_SIZE) {
             grid.lineStyle(gridThickness, 0x353535)
                 .moveTo(0, i)
                 .lineTo(fullCellSize, i);

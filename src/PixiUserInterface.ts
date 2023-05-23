@@ -1,5 +1,6 @@
 import * as PIXI from "pixi.js";
 import Grid from "./Grid";
+import RegularNode from "./nodes/RegularNode";
 
 export default class PixiUserInterface {
     app:any = null;
@@ -17,6 +18,11 @@ export default class PixiUserInterface {
         // TODO: load textures before setting view maybe.
         document.body.append(this.app.view);
         console.log("Pixi Initialized");
-        var grid = new Grid(this.app, 0, 0);
+        let grid = new Grid(this.app, 0, 0);
+        let mainContainer = new PIXI.Container();
+        this.app.stage.addChild(mainContainer);
+        let node = new RegularNode(null,0,0);
+        node.init();
+        node.draw(mainContainer);
     }
 }
