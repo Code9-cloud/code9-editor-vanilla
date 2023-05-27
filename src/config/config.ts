@@ -1,14 +1,19 @@
+import * as PIXI from "pixi.js"
+
 export const CONFIG = {
     CELL_SIZE: 16
 }
 
 export const VAR_COLORS = {
     bool: 0x8c0202,
+    BOOL: 0x8c0202,
     byte: 0x026960,
     int: 0x1ed6a4,
+    I64: 0x1ed6a4,
     float: 0x97ef42,
     name: 0xc07bef,
     string: 0xef02c8,
+    STRING: 0xef02c8,
     text: 0xd975a0,
     vector: 0xefbd22,
     rotator: 0x97a9ef,
@@ -21,6 +26,7 @@ export const VAR_COLORS = {
     event: 0x8d1313,
     delegate: 0xff3838,
     object: 0x0481b7,
+    STRUCT: 0x0481b7,
     class: 0x5501b3,
     struct: 0x024bab,
     exec: 0xffffff,
@@ -32,3 +38,9 @@ export const VAR_COLORS = {
     parent: 0x854613,
     switch_on: 0x8f9013
 };
+
+export const defaultTextStyle = new PIXI.TextStyle({
+    fontFamily: 'Roboto',
+    fontSize: 12,
+    fill: ['#ffffff'], // gradient
+});

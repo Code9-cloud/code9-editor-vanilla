@@ -1,6 +1,8 @@
 import * as PIXI from "pixi.js";
 import Grid from "./Grid";
 import RegularNode from "./nodes/RegularNode";
+import {EXAMPLE_ADD} from "./examples/add";
+import {Graph, Node} from "./models/Models";
 
 export default class PixiUserInterface {
     app:any = null;
@@ -21,8 +23,16 @@ export default class PixiUserInterface {
         let grid = new Grid(this.app, 0, 0);
         let mainContainer = new PIXI.Container();
         this.app.stage.addChild(mainContainer);
-        let node = new RegularNode(null,0,0);
-        node.init();
-        node.draw(mainContainer);
+        let test_graph = new Graph(EXAMPLE_ADD);
+        // console.log(test_graph);
+        // let node = new RegularNode(null,0,0);
+        let nodes = [];
+        let curr_node : Node;
+        for (curr_node of test_graph.nodes){
+            let node = new RegularNode(curr_node);
+            node.init();
+            node.draw(mainContainer);
+            nodes.push(node);
+        }
     }
 }

@@ -1,7 +1,9 @@
-import {CONFIG, VAR_COLORS} from "../config/config";
+import {CONFIG, VAR_COLORS, defaultTextStyle} from "../config/config";
 import * as PIXI from "pixi.js";
-import {Container, DisplayObject} from "pixi.js";
+import {Container, DisplayObject, NineSlicePlane, Text} from "pixi.js";
 import TexturesHandler from '../textures/Textures';
+import {ExecInPin, ExecOutPin, InputPin, Node, OutputPin} from "../models/Models";
+import {TEXTURES} from "../resources";
 
 class NodeConfig {
     body: boolean;
@@ -23,8 +25,10 @@ export default class RegularNode {
     private x: number;
     private y: number;
     private height: number;
-    private inputs: any[];
-    private outputs: any[];
+    private exec_ins: ExecInPin[];
+    private exec_outs: ExecOutPin[];
+    private inputs: InputPin[];
+    private outputs: OutputPin[];
     private fontSize: number;
     private pins: any[];
     private showPinText: boolean;
@@ -36,22 +40,28 @@ export default class RegularNode {
     private config: NodeConfig = null;
     private width: number;
     private innerRowOffsetCells: number;
-    private node: any;
+    private node: Node;
     private pinRows: any[];
     private colorTint: number;
     private container: Container<DisplayObject>;
     private titleHeight: number;
     private lastPinY: number;
-    private body: any;
-    private shadow: any;
-    private gloss: any;
-    private titleHighlight: any;
-    private colorSpill: any;
-    private nodesContainer: any;
-    constructor(node, x, y) {
-        this.x = parseInt(x);
-        this.y = parseInt(y);
+    private body: NineSlicePlane;
+    private shadow: NineSlicePlane;
+    private gloss: NineSlicePlane;
+    private titleHighlight: NineSlicePlane;
+    private colorSpill: NineSlicePlane;
+    private nodesContainer: Container<DisplayObject>;
+    private pinStartY: number;
+    private name: string;
+    private headerText: Text;
+    private headerTextOffset: number;
+    constructor(node) {
+        this.x = node.pos_x;
+        this.y = node.pos_y;
         this.height = 0;
+        this.exec_ins = [];
+        this.exec_outs = [];
         this.inputs = [];
         this.outputs = [];
         this.fontSize = 14;
@@ -61,6 +71,7 @@ export default class RegularNode {
         this.minCellHeight = 3;
         this.inputOffset = this.cellSize * 0.2;
         this.pointOnNode = null;
+        this.name = node.name;
 
 
         if (!this.config) {
@@ -71,18 +82,25 @@ export default class RegularNode {
         this.height = CONFIG.CELL_SIZE * this.minCellHeight;
 
 
-        // if (node.inputs) {
-        //     this.inputs = node.inputs;
-        // }
-        // if (node.outputs) {
-        //     this.outputs = node.outputs;
-        // }
+        if (node.exec_ins) {
+            this.exec_ins = node.exec_ins;
+        }
+        if (node.exec_outs) {
+            this.exec_outs = node.exec_outs;
+        }
+        if (node.inputs) {
+            this.inputs = node.inputs;
+        }
+        if (node.outputs) {
+            this.outputs = node.outputs;
+        }
 
 
         this.innerRowOffsetCells = 1.5;
 
         this.pinRows = [];
 
+        //TODO: Change tint based on node type
         this.colorTint = VAR_COLORS.bool;
 
         this.titleHeight = CONFIG.CELL_SIZE * 1.5;
@@ -119,6 +137,7 @@ export default class RegularNode {
 
 
         this.lastPinY = 0;
+        this.headerTextOffset = CONFIG.CELL_SIZE * 2;
     }
     // onDragStart(e) {
     //     this.dragging = true;
@@ -201,7 +220,8 @@ export default class RegularNode {
     //     return false;
     // }
     init() {
-        // this.preparePinRows();
+        this.headerText = new PIXI.Text(this.name, defaultTextStyle);
+        this.preparePinRows();
 
         this.container.x += this.width / 2;
         this.container.y += this.height / 2;
@@ -315,205 +335,222 @@ export default class RegularNode {
             this.container.addChild(this.colorSpill);
         }
 
+        this.headerText.x = -this.body.width / 2;
+        this.headerText.y = -this.body.height / 2;
+
+        this.headerText.y += this.gloss.height / 2;
+        this.headerText.x += this.headerTextOffset;
+
+        this.headerText.anchor.set(0, 0.5);
+
+        this.container.addChild(this.headerText);
+
         if (this.config.titleHighlight) {
             this.container.addChild(this.titleHighlight);
         }
 
 
-        // if (this.config.titleHighlight) {
-        //     this.pinStartY = this.titleHighlight.y + this.titleHighlight.height + CONFIG.CELL_SIZE;
-        //     this.drawPinRows();
-        // }
-
-
+        if (this.config.titleHighlight) {
+            this.pinStartY = this.titleHighlight.y + this.titleHighlight.height + CONFIG.CELL_SIZE;
+            this.drawPinRows();
+        }
 
         nodesContainer.addChild(this.container);
 
     }
-    // drawPinRows() {
-    //     for (var i = 0; i < this.pinRows.length; i++) {
-    //         var row = this.pinRows[i];
-    //         if (row.input) {
-    //             this.drawInput(row.input, i);
-    //         }
-    //         if (row.output) {
-    //             this.drawOutput(row.output, i);
-    //         }
-    //     }
-    // }
-    // drawInput(input, idx) {
-    //     var pinSprite = input.sprite;
-    //     var pinStartY = this.pinStartY;
-    //
-    //     pinSprite.x = -this.body.width / 2 + CONFIG.CELL_SIZE;
-    //     pinSprite.y = pinStartY + idx * CONFIG.CELL_SIZE * 1.5;
-    //
-    //     this.container.addChild(pinSprite);
-    //
-    //     if (input.text) {
-    //         var pinText = input.text;
-    //         pinText.x = pinSprite.x + CONFIG.CELL_SIZE * (3 / 4);
-    //         pinText.y = pinSprite.y;
-    //         this.container.addChild(pinText);
-    //     }
-    //
-    //
-    //
-    //
-    //
-    //     if (input.valueText) {
-    //         var valueText = input.valueText;
-    //         valueText.x = pinText.x + pinText.width + CONFIG.CELL_SIZE / 2;
-    //         valueText.y = pinSprite.y;
-    //
-    //         var valueBorder = input.valueBorder;
-    //         valueBorder.drawRect(valueText.x - CONFIG.CELL_SIZE / 8, pinSprite.y - valueText.height / 2, valueText.width + CONFIG.CELL_SIZE / 4, valueText.height);
-    //
-    //         this.container.addChild(valueText);
-    //         this.container.addChild(valueBorder);
-    //     }
-    // }
-    // drawOutput(output, idx) {
-    //     var pinSprite = output.sprite;
-    //     var pinStartY = this.pinStartY;
-    //
-    //     pinSprite.x = this.body.width / 2 - CONFIG.CELL_SIZE;
-    //     pinSprite.y = pinStartY + idx * CONFIG.CELL_SIZE * 1.5;
-    //     this.container.addChild(pinSprite);
-    //
-    //     if (output.text) {
-    //         var pinText = output.text;
-    //
-    //         pinText.x = pinSprite.x - CONFIG.CELL_SIZE * (3 / 4);
-    //         pinText.y = pinSprite.y;
-    //
-    //         this.container.addChild(pinText);
-    //     }
-    //
-    //     if (output.valueText) {
-    //         var valueText = output.valueText;
-    //         valueText.x = pinText.x + pinText.width + CONFIG.CELL_SIZE / 2;
-    //         valueText.y = pinSprite.y;
-    //
-    //         var valueBorder = output.valueBorder;
-    //         valueBorder.drawRect(valueText.x - CONFIG.CELL_SIZE / 8, pinSprite.y - valueText.height / 2, valueText.width + CONFIG.CELL_SIZE / 4, valueText.height);
-    //
-    //         this.container.addChild(valueText);
-    //         this.container.addChild(valueBorder);
-    //     }
-    // }
-    // preparePinRows() {
-    //     var l = Math.max(this.inputs.length, this.outputs.length);
-    //
-    //     var maxRowWidth = 0;
-    //     for (var i = 0; i < l; i++) {
-    //         var rowWidth = 0;
-    //         if ((this.inputs[i] && this.inputs.name !== "Output Delegate") || (this.outputs[i] && this.outputs[i].name !== "Output Delegate")) {
-    //             var newRow = {};
-    //             if (this.inputs[i]) {
-    //                 var pin = this.preparePin(this.inputs[i]);
-    //                 newRow.input = pin.pin;
-    //                 rowWidth += pin.width;
-    //             }
-    //             rowWidth += this.innerRowOffsetCells * CONFIG.CELL_SIZE;
-    //             if (this.outputs[i]) {
-    //                 var pin = this.preparePin(this.outputs[i], true);
-    //                 newRow.output = pin.pin;
-    //                 rowWidth += pin.width;
-    //             }
-    //
-    //             if (rowWidth > maxRowWidth) {
-    //                 maxRowWidth = rowWidth;
-    //             }
-    //
-    //             this.pinRows.push(newRow);
-    //         }
-    //     }
-    //
-    //     if (this.width < maxRowWidth) {
-    //         this.width = this.nearestCellWidth(maxRowWidth) * CONFIG.CELL_SIZE;
-    //     }
-    //
-    //     var height = this.titleHeight + CONFIG.CELL_SIZE + this.pinRows.length * CONFIG.CELL_SIZE * 1.5;
-    //
-    //     if (this.height < height) {
-    //         this.height = this.nearestCellWidth(height) * CONFIG.CELL_SIZE - CONFIG.CELL_SIZE / 2;
-    //     }
-    // }
-    // preparePin(pin, isOutput) {
-    //     var ret = {
-    //         pin: {
-    //             links: []
-    //         },
-    //         width: 0
-    //     };
-    //
-    //     //console.log(pin);
-    //     var pinSprite = PIXI.Sprite.fromImage(this.getPinSprite(pin));
-    //     if (pin.type.name !== "exec") {
-    //         pinSprite.tint = VAR_COLORS[pin.type.name];
-    //     }
-    //
-    //     if (pin.links) {
-    //         ret.pin.links = pin.links;
-    //     }
-    //
-    //     ret.pin.type = pin.type;
-    //     ret.pin.id = pin.id;
-    //
-    //
-    //
-    //
-    //     pinSprite.anchor.set(0.5, 0.5);
-    //     //pinSprite.displayGroup = this.pinsLayer;
-    //     ret.pin.sprite = pinSprite;
-    //
-    //     ret.width = pinSprite.width + CONFIG.CELL_SIZE;
-    //
-    //     var drawText = true;
-    //
-    //     if (pin.name && (pin.name === "execute" || pin.name === "then" || pin.name === "Output_Get")) {
-    //         drawText = false;
-    //     } else if (this.constructor.name === 'BinaryOperatorNode' && pin.name === "Return Value") {
-    //         drawText = false;
-    //     }
-    //
-    //     // if (drawText) {
-    //     //     var pinText = new PIXI.Text(pin.name, defaultTextStyle);
-    //     //     pinText.anchor.set(0, 0.5);
-    //     //     if (isOutput) {
-    //     //         pinText.anchor.set(1, 0.5);
-    //     //     }
-    //     //     //pinText.displayGroup = this.pinsLayer;
-    //     //     ret.pin.text = pinText;
-    //     //
-    //     //     ret.width += pinText.width + CONFIG.CELL_SIZE * (3 / 4)
-    //     // }
-    //
-    //
-    //     // if (pin.value) {
-    //     //     var valueText = new PIXI.Text(pin.value, defaultTextStyle);
-    //     //     valueText.anchor.set(0, 0.5);
-    //     //     //valueText.displayGroup = this.pinsLayer;
-    //     //
-    //     //     var valueBorder = new PIXI.Graphics();
-    //     //     //valueBorder.displayGroup = this.pinsLayer;
-    //     //     valueBorder.lineStyle(1, 0xFFFFFF);
-    //     //
-    //     //     ret.pin.valueText = valueText;
-    //     //     ret.pin.valueBorder = valueBorder;
-    //     //
-    //     //     ret.width += CONFIG.CELL_SIZE / 2 + valueText.width + CONFIG.CELL_SIZE / 4;
-    //     // }
-    //
-    //     return ret;
-    // }
-    // getPinSprite(pin) {
-    //     if (pin.type.name === "exec") {
-    //         return pin.linked ? TEXTURES.ExecPinDisconnected : TEXTURES.ExecPinDisconnected;
-    //     }
-    //     return pin.linked ? TEXTURES.PinConnected : TEXTURES.PinDisconnected;
-    // }
+    drawPinRows() {
+        for (var i = 0; i < this.pinRows.length; i++) {
+            var row = this.pinRows[i];
+            if (row.input) {
+                this.drawInput(row.input, i);
+            }
+            if (row.output) {
+                this.drawOutput(row.output, i);
+            }
+        }
+    }
+    drawInput(input, idx) {
+        var pinSprite = input.sprite;
+        var pinStartY = this.pinStartY;
+
+        pinSprite.x = -this.body.width / 2 + CONFIG.CELL_SIZE;
+        pinSprite.y = pinStartY + idx * CONFIG.CELL_SIZE * 1.5;
+
+        this.container.addChild(pinSprite);
+
+        if (input.text) {
+            var pinText = input.text;
+            pinText.x = pinSprite.x + CONFIG.CELL_SIZE * (3 / 4);
+            pinText.y = pinSprite.y;
+            this.container.addChild(pinText);
+        }
+
+
+
+
+
+        if (input.valueText) {
+            var valueText = input.valueText;
+            valueText.x = pinText.x + pinText.width + CONFIG.CELL_SIZE / 2;
+            valueText.y = pinSprite.y;
+
+            var valueBorder = input.valueBorder;
+            valueBorder.drawRect(valueText.x - CONFIG.CELL_SIZE / 8, pinSprite.y - valueText.height / 2, valueText.width + CONFIG.CELL_SIZE / 4, valueText.height);
+
+            this.container.addChild(valueText);
+            this.container.addChild(valueBorder);
+        }
+    }
+    drawOutput(output, idx) {
+        var pinSprite = output.sprite;
+        var pinStartY = this.pinStartY;
+
+        pinSprite.x = this.body.width / 2 - CONFIG.CELL_SIZE;
+        pinSprite.y = pinStartY + idx * CONFIG.CELL_SIZE * 1.5;
+        this.container.addChild(pinSprite);
+
+        if (output.text) {
+            var pinText = output.text;
+
+            pinText.x = pinSprite.x - CONFIG.CELL_SIZE * (3 / 4);
+            pinText.y = pinSprite.y;
+
+            this.container.addChild(pinText);
+        }
+
+        if (output.valueText) {
+            var valueText = output.valueText;
+            valueText.x = pinText.x + pinText.width + CONFIG.CELL_SIZE / 2;
+            valueText.y = pinSprite.y;
+
+            var valueBorder = output.valueBorder;
+            valueBorder.drawRect(valueText.x - CONFIG.CELL_SIZE / 8, pinSprite.y - valueText.height / 2, valueText.width + CONFIG.CELL_SIZE / 4, valueText.height);
+
+            this.container.addChild(valueText);
+            this.container.addChild(valueBorder);
+        }
+    }
+    preparePinRows() {
+        var l = Math.max((this.exec_ins.length + this.inputs.length), (this.exec_outs.length + this.outputs.length));
+
+        var maxRowWidth = 0;
+        for (var i = 0; i < l; i++) {
+            var rowWidth = 0;
+            var newRow: any = {};
+            if (i < this.exec_ins.length) {
+                var pin = this.preparePin(this.exec_ins[i], false);
+                newRow.input = pin.pin;
+                rowWidth += pin.width;
+            } else if (i < this.exec_ins.length + this.inputs.length) {
+                var pin = this.preparePin(this.inputs[i - this.exec_ins.length], false);
+                newRow.input = pin.pin;
+                rowWidth += pin.width;
+            }
+            rowWidth += this.innerRowOffsetCells * CONFIG.CELL_SIZE;
+            if (i < this.exec_outs.length) {
+                var pin = this.preparePin(this.exec_outs[i], true);
+                newRow.output = pin.pin;
+                rowWidth += pin.width;
+            } else if (i < this.exec_outs.length + this.outputs.length) {
+                var pin = this.preparePin(this.outputs[i - this.exec_outs.length], true);
+                newRow.output = pin.pin;
+                rowWidth += pin.width;
+            }
+
+            if (rowWidth > maxRowWidth) {
+                maxRowWidth = rowWidth;
+            }
+
+            this.pinRows.push(newRow);
+        }
+
+        if (this.width < maxRowWidth) {
+            this.width = this.nearestCellWidth(maxRowWidth) * CONFIG.CELL_SIZE;
+        }
+
+        var height = this.titleHeight + CONFIG.CELL_SIZE + this.pinRows.length * CONFIG.CELL_SIZE * 1.5;
+
+        if (this.height < height) {
+            this.height = this.nearestCellWidth(height) * CONFIG.CELL_SIZE - CONFIG.CELL_SIZE / 2;
+        }
+    }
+    preparePin(pin, isOutput) {
+        var ret : any = {
+            pin: {
+            },
+            width: 0
+        };
+
+        var pinSprite = PIXI.Sprite.from(this.getPinSprite(pin));
+        // if (pin.type.name !== "exec") {
+        //     pinSprite.tint = VAR_COLORS[pin.type.name];
+        // }
+
+        // if (pin.links) {
+        //     ret.pin.links = pin.links;
+        // }
+        if (pin.type) {
+            ret.pin.type = pin.type;
+            pinSprite.tint = VAR_COLORS[pin.type];
+        } else {
+            ret.pin.type = "exec";
+        }
+        ret.pin.id = pin.id;
+
+
+
+
+        pinSprite.anchor.set(0.5, 0.5);
+        //pinSprite.displayGroup = this.pinsLayer;
+        ret.pin.sprite = pinSprite;
+
+        ret.width = pinSprite.width + CONFIG.CELL_SIZE;
+
+        var drawText = true;
+
+        // if (pin.name && (pin.name === "execute" || pin.name === "then" || pin.name === "Output_Get")) {
+        //     drawText = false;
+        // } else if (this.constructor.name === 'BinaryOperatorNode' && pin.name === "Return Value") {
+        //     drawText = false;
+        // }
+
+        if (drawText) {
+            var pinText = new PIXI.Text(pin.name, defaultTextStyle);
+            pinText.anchor.set(0, 0.5);
+            if (isOutput) {
+                pinText.anchor.set(1, 0.5);
+            }
+            //pinText.displayGroup = this.pinsLayer;
+            ret.pin.text = pinText;
+
+            ret.width += pinText.width + CONFIG.CELL_SIZE * (3 / 4)
+        }
+
+
+        // if (pin.value) {
+        //     var valueText = new PIXI.Text(pin.value, defaultTextStyle);
+        //     valueText.anchor.set(0, 0.5);
+        //     //valueText.displayGroup = this.pinsLayer;
+        //
+        //     var valueBorder = new PIXI.Graphics();
+        //     //valueBorder.displayGroup = this.pinsLayer;
+        //     valueBorder.lineStyle(1, 0xFFFFFF);
+        //
+        //     ret.pin.valueText = valueText;
+        //     ret.pin.valueBorder = valueBorder;
+        //
+        //     ret.width += CONFIG.CELL_SIZE / 2 + valueText.width + CONFIG.CELL_SIZE / 4;
+        // }
+
+        return ret;
+    }
+    getPinSprite(pin) {
+        // if (pin.type.name === "exec") {
+        //     return pin.linked ? TEXTURES.ExecPinDisconnected : TEXTURES.ExecPinDisconnected;
+        // }
+        return TEXTURES.PinConnected;
+        // return pin.linked ? TEXTURES.PinConnected : TEXTURES.PinDisconnected;
+    }
     nearestCellWidth(width) {
         return Math.ceil(width / CONFIG.CELL_SIZE);
     }

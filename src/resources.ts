@@ -4,6 +4,8 @@ import RegularNodeTitleHightlight from './assets/nodes/RegularNode_title_highlig
 import RegularNodeShadow from './assets/nodes/RegularNode_shadow.png';
 import RegularNodeShadowSelected from './assets/nodes/RegularNode_shadow_selected.png';
 import RegularNodeColorSpill from './assets/nodes/RegularNode_color_spill.png';
+import PinConnected from './assets/nodes/Pin_connected_VarA.png';
+import PinDisconnected from './assets/nodes/Pin_disconnected_VarA.png';
 
 export const TEXTURES = {
     RegularNodeBody: RegularNodeBody,
@@ -12,4 +14,6 @@ export const TEXTURES = {
     RegularNodeShadow: RegularNodeShadow,
     RegularNodeShadowSelected: RegularNodeShadowSelected,
     RegularNodeColorSpill: RegularNodeColorSpill,
+    PinConnected: PinConnected,
+    PinDisconnected: PinDisconnected
 }

@@ -60,23 +60,23 @@ export default class EventDispatcher {
         //     }
         // });
 
-        document.getElementById("left").onclick = (ev) => {
-            ev.preventDefault();
-            this.handleSidePanelSizeReduce();
-        };
-
-        document.getElementById("right").onclick = (ev) => {
-            ev.preventDefault();
-            this.handleSidePanelSizeIncrease();
-        };
-
-        document.getElementById("fullscreen").onclick = (ev) => {
-            document.body.requestFullscreen();
-        }
-
-        document.getElementById("exit-fullscreen").onclick = (ev) => {
-            document.exitFullscreen();
-        }
+        // document.getElementById("left").onclick = (ev) => {
+        //     ev.preventDefault();
+        //     this.handleSidePanelSizeReduce();
+        // };
+        //
+        // document.getElementById("right").onclick = (ev) => {
+        //     ev.preventDefault();
+        //     this.handleSidePanelSizeIncrease();
+        // };
+        //
+        // document.getElementById("fullscreen").onclick = (ev) => {
+        //     document.body.requestFullscreen();
+        // }
+        //
+        // document.getElementById("exit-fullscreen").onclick = (ev) => {
+        //     document.exitFullscreen();
+        // }
     }
 
     handleMouseDown(ev:MouseEvent){
