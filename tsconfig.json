@@ -3,10 +3,11 @@
     "skipLibCheck": true,
     "outDir": "./dist",
     "allowJs": true,
-    "target": "es5",
+    "target": "es6",
     "module": "commonjs",
     "sourceMap": true,
-    "moduleResolution": "NodeNext"
+    "moduleResolution": "NodeNext",
+    "allowSyntheticDefaultImports": true
   },
   "include": ["./src/**/*"]
 }

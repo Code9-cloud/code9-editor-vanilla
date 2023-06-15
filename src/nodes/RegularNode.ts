@@ -2,8 +2,9 @@ import {CONFIG, VAR_COLORS, defaultTextStyle} from "../config/config";
 import * as PIXI from "pixi.js";
 import {Container, DisplayObject, NineSlicePlane, Text} from "pixi.js";
 import TexturesHandler from '../textures/Textures';
-import {ExecInPin, ExecOutPin, InputPin, Node, OutputPin} from "../models/Models";
+import {Node, Pin} from "../models/Models";
 import {TEXTURES} from "../resources";
+import UIGraph from "../ui/UIGraph";
 
 class NodeConfig {
     body: boolean;
@@ -25,10 +26,8 @@ export default class RegularNode {
     private x: number;
     private y: number;
     private height: number;
-    private exec_ins: ExecInPin[];
-    private exec_outs: ExecOutPin[];
-    private inputs: InputPin[];
-    private outputs: OutputPin[];
+    private inputs: string[];
+    private outputs: string[];
     private fontSize: number;
     private pins: any[];
     private showPinText: boolean;
@@ -56,12 +55,12 @@ export default class RegularNode {
     private name: string;
     private headerText: Text;
     private headerTextOffset: number;
-    constructor(node) {
+    private parent: UIGraph;
+    constructor(node, graph) {
+        this.parent = graph;
         this.x = node.pos_x;
         this.y = node.pos_y;
         this.height = 0;
-        this.exec_ins = [];
-        this.exec_outs = [];
         this.inputs = [];
         this.outputs = [];
         this.fontSize = 14;
@@ -69,7 +68,7 @@ export default class RegularNode {
         this.showPinText = true;
         this.minCellWidth = 8;
         this.minCellHeight = 3;
-        this.inputOffset = this.cellSize * 0.2;
+        this.inputOffset = CONFIG.CELL_SIZE * 0.2;
         this.pointOnNode = null;
         this.name = node.name;
 
@@ -81,13 +80,6 @@ export default class RegularNode {
         this.width = CONFIG.CELL_SIZE * this.minCellWidth;
         this.height = CONFIG.CELL_SIZE * this.minCellHeight;
 
-
-        if (node.exec_ins) {
-            this.exec_ins = node.exec_ins;
-        }
-        if (node.exec_outs) {
-            this.exec_outs = node.exec_outs;
-        }
         if (node.inputs) {
             this.inputs = node.inputs;
         }
@@ -431,28 +423,20 @@ export default class RegularNode {
         }
     }
     preparePinRows() {
-        var l = Math.max((this.exec_ins.length + this.inputs.length), (this.exec_outs.length + this.outputs.length));
+        var l = Math.max(this.inputs.length, this.outputs.length);
 
         var maxRowWidth = 0;
         for (var i = 0; i < l; i++) {
             var rowWidth = 0;
             var newRow: any = {};
-            if (i < this.exec_ins.length) {
-                var pin = this.preparePin(this.exec_ins[i], false);
-                newRow.input = pin.pin;
-                rowWidth += pin.width;
-            } else if (i < this.exec_ins.length + this.inputs.length) {
-                var pin = this.preparePin(this.inputs[i - this.exec_ins.length], false);
+            if (i < this.inputs.length) {
+                var pin = this.preparePin(this.inputs[i], false);
                 newRow.input = pin.pin;
                 rowWidth += pin.width;
             }
             rowWidth += this.innerRowOffsetCells * CONFIG.CELL_SIZE;
-            if (i < this.exec_outs.length) {
-                var pin = this.preparePin(this.exec_outs[i], true);
-                newRow.output = pin.pin;
-                rowWidth += pin.width;
-            } else if (i < this.exec_outs.length + this.outputs.length) {
-                var pin = this.preparePin(this.outputs[i - this.exec_outs.length], true);
+            if (i < this.outputs.length) {
+                var pin = this.preparePin(this.outputs[i], true);
                 newRow.output = pin.pin;
                 rowWidth += pin.width;
             }
@@ -548,7 +532,7 @@ export default class RegularNode {
         // if (pin.type.name === "exec") {
         //     return pin.linked ? TEXTURES.ExecPinDisconnected : TEXTURES.ExecPinDisconnected;
         // }
-        return TEXTURES.PinConnected;
+        return pin.is_connected ? TEXTURES.PinConnected : TEXTURES.PinDisconnected;
         // return pin.linked ? TEXTURES.PinConnected : TEXTURES.PinDisconnected;
     }
     nearestCellWidth(width) {

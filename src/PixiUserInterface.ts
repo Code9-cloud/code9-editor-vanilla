@@ -3,9 +3,13 @@ import Grid from "./Grid";
 import RegularNode from "./nodes/RegularNode";
 import {EXAMPLE_ADD} from "./examples/add";
 import {Graph, Node} from "./models/Models";
+import UIGraph from "./ui/UIGraph";
+import TexturesHandler from './textures/Textures';
+import {Container, DisplayObject} from "pixi.js";
 
 export default class PixiUserInterface {
     app:any = null;
+    private container: Container<DisplayObject>;
     constructor(document) {
         this.app = new PIXI.Application();
         document.body.style.margin = '0';
@@ -22,17 +26,23 @@ export default class PixiUserInterface {
         console.log("Pixi Initialized");
         let grid = new Grid(this.app, 0, 0);
         let mainContainer = new PIXI.Container();
-        this.app.stage.addChild(mainContainer);
+        this.container = mainContainer;
+        this.app.stage.addChild(this.container);
+    }
+
+    async loadAssets(){
+        await TexturesHandler.load();
         let test_graph = new Graph(EXAMPLE_ADD);
+        let test_regular_graph = new UIGraph(test_graph, this.container);
         // console.log(test_graph);
         // let node = new RegularNode(null,0,0);
-        let nodes = [];
-        let curr_node : Node;
-        for (curr_node of test_graph.nodes){
-            let node = new RegularNode(curr_node);
-            node.init();
-            node.draw(mainContainer);
-            nodes.push(node);
-        }
+        // let nodes = [];
+        // for (let node_id of test_graph.nodes.keys()){
+        //     let node = new RegularNode(test_graph.nodes.get(node_id), test_graph);
+        //     node.init();
+        //     node.draw(mainContainer);
+        //     nodes.push(node);
+        // }
+        test_regular_graph.draw();
     }
 }

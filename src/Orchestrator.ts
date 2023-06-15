@@ -35,7 +35,8 @@ export default class Orchestrator {
     }
 
     // Start scheduling tasks as per config
-    begin(){
+    async begin(){
+        await this.PUI.loadAssets();
         this.UI_STATE = OrchestratorUIState.Rendering;
         this.last_prerender_at = Date.now();
         this.last_render_start_at = Date.now();

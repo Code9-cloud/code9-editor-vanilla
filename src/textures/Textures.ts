@@ -9,18 +9,25 @@ class TexturesHandler {
     titleHighlightTexture: Texture<Resource>;
     glossTexture: Texture<Resource>;
     bodyTexture: Texture<Resource>;
+    pinConnected: Texture<Resource>;
+    pinDisconnected: Texture<Resource>;
     constructor() {
-        this.bodyTexture = PIXI.Texture.from(TEXTURES.RegularNodeBody);
-        this.glossTexture = PIXI.Texture.from(TEXTURES.RegularNodeTitleGloss);
-        this.titleHighlightTexture = PIXI.Texture.from(TEXTURES.RegularNodeTitleHightlight);
-        this.shadowTexture = PIXI.Texture.from(TEXTURES.RegularNodeShadow);
-        this.shadowSelectedTexture = PIXI.Texture.from(TEXTURES.RegularNodeShadowSelected);
-        this.colorSpillTexture = PIXI.Texture.from(TEXTURES.RegularNodeColorSpill);
+    }
+
+    async load(){
+        this.bodyTexture = await PIXI.Assets.load(TEXTURES.RegularNodeBody);
+        this.glossTexture = await PIXI.Assets.load(TEXTURES.RegularNodeTitleGloss);
+        this.titleHighlightTexture = await PIXI.Assets.load(TEXTURES.RegularNodeTitleHightlight);
+        this.shadowTexture = await PIXI.Assets.load(TEXTURES.RegularNodeShadow);
+        this.shadowSelectedTexture = await PIXI.Assets.load(TEXTURES.RegularNodeShadowSelected);
+        this.colorSpillTexture = await PIXI.Assets.load(TEXTURES.RegularNodeColorSpill);
+        this.pinConnected = await PIXI.Assets.load(TEXTURES.PinConnected);
+        this.pinDisconnected = await PIXI.Assets.load(TEXTURES.PinDisconnected);
     }
 }
 
 const instance = new TexturesHandler();
 
-Object.freeze(instance);
+// Object.freeze(instance);
 
 export default instance;
