@@ -35,10 +35,10 @@
 4. Flow should be debuggable.
 5. Export of flow should be possible to languages golang, nodejs and rust.
 
-**Concept**- Flow
-**State**- List of Nodes, List of Connections
-**Action**
-**Operational Principle**- Given any algo, it should be able to define its flow
+**Concept**- Flow <br />
+**State**- List of Nodes, List of Connections <br />
+**Action** <br />
+**Operational Principle**- Given any algo, it should be able to define its flow <br />
 **Purpose**- Ability to describe code visually
 
 ### Necessary Nodes
@@ -207,6 +207,34 @@
 
 1. Ability to create modules from a group of flows
 2. Ability to abstract flows in a module
+
+**Concept**- Module <br />
+**State** <br />
+**Action** <br />
+**Operational Principle**- Add / Remove flows, Access Modifiers of flow, Dependency Injection, Module based variables <br />
+**Purpose**- Abstraction & composition of flows to create higher level view
+
+### State
+
+1. Default Flow
+2. Special Flows (E.g. constructor, destructor, etc)
+3. Named flows (Access Modifiers)
+4. Member Variables (Access Modifiers)
+5. Global Variable
+6. Dependency Injection (Post MVP*)
+
+### Action
+
+1. Create / Update / Delete Module
+2. Create / Update / Delete Member Variable
+3. Access Modifiers of variables
+4. Update special flows
+5. Update default flow
+6. Add / Remove Dependency Injections*
+7. Add / Remove Global Variables*
+8. Debug Module
+9. Execute Module
+
 ---
 
 ## Services
