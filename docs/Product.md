@@ -25,6 +25,7 @@
 23. Live Preview
 24. Context Search
 ---
+
 # Actions
 
 ## Flow
@@ -96,6 +97,30 @@
 2. Editor should support upto 1000 nodes that are densely connected.
 3. Editor should allow drag drops from other panels of whole product.
 
+**Concept**- Editor <br />
+**State**- <br />
+**Action** <br />
+**Operational Principle**- Allow flow/module creation, update, viewing.  <br />
+**Purpose**- Allow modification to flows with intuitive user interface and experience.
+
+### State
+
+Best of IDE + UE Editor + n8n
+
+1. Menu
+2. Menu Items
+3. Side Panel
+4. Side Panel Items
+5. Graph Editor
+   1. Flows
+6. Diff Viewer
+7. Bottom Bar
+   1. Show check in version / branch
+   2. Show environment
+   3. Show deployment if applicable
+8. Sub panels.
+9. Changes List (for undo redo etc.)
+
 ---
 ## Schema / Entities
 
@@ -155,6 +180,8 @@
 
 1. Ability to take versioned flow(s) and launch them in a target environment
 2. Track the progress of deployment
+3. Allow hidden instances for easy debugging.
+4. 
 ---
 
 ## Testing
