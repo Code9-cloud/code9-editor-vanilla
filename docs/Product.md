@@ -7,7 +7,7 @@
 5. Version
 6. Data Store
 7. Events / Trigger
-8. User
+8. User/Principal
 9. Consumer
 10. Environments
 11. Deployment
@@ -24,6 +24,8 @@
 22. Services
 23. Live Preview
 24. Context Search
+25. Refactor
+26. 
 ---
 
 # Actions
@@ -267,16 +269,19 @@ Best of IDE + UE Editor + n8n
 ## Services
 
 1. Platform should top level Tasks and Services in a unified view.
+
 ---
 
 ## Live Preview
 
 1. In Debug states, show payload and other debug info in live preview.
+
 ---
 
 ## Context Search
 
 1. There should be searches for faster lookups of various components within platform.
+
 ---
 
 # Wireframes
@@ -285,3 +290,29 @@ Best of IDE + UE Editor + n8n
 2. Clicking on Flows should be
 
 ---
+
+# Examples
+
+1. Integrations (like Webhooks)
+2. Segment Equivalent
+3. Connectors
+4. Business Rule Engine
+5. Small Application like Login and Data APIs
+6. An Ecommerce App
+7. POS System
+
+
+# Minimal Integrations
+
+1. Email Clients
+2. AWS Services (Lambda, Event Bridge, Kinesis, S3)
+3. Mongo
+4. MySQl
+5. Postgres
+6. Webhooks
+7. Google Analytics
+8. MixPanel
+9. Node JS
+10. GoLang
+11. Rust
+12. Auth (Passport Like)

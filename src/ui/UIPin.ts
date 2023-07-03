@@ -26,11 +26,12 @@ export default class UIPin {
             fontSize: 12,
             fill: ['#ffffff']
         }));
-        this.width = this.pinSprite.width + CONFIG.CELL_SIZE + this.pinText.width + CONFIG.CELL_SIZE * (3/4);
+        this.width = this.pinSprite.width + CONFIG.CELL_SIZE + this.pinText.width + CONFIG.CELL_SIZE * (1/4);
         if (this.pin.is_output){
             this.x -= this.width;
+            this.pinSprite.x = this.width - this.pinSprite.width;
         }
-        this.height = CONFIG.CELL_SIZE * (1.5);
+        // this.height = CONFIG.CELL_SIZE * (1.5);
         this.container.width = this.width;
         this.container.height = this.height;
 
@@ -50,9 +51,10 @@ export default class UIPin {
         this.container.addChild(this.pinSprite);
         this.container.addChild(this.pinText);
         this.pinText.anchor.set(0, 0);
+        this.pinText.x = this.pinSprite.x + this.pinSprite.width + CONFIG.CELL_SIZE * (1 / 4);
         if (this.pin.is_output) {
             this.pinText.anchor.set(1, 0);
-            this.pinText.x = this.pinSprite.x - CONFIG.CELL_SIZE * (3 / 4);
+            this.pinText.x = this.pinSprite.x - CONFIG.CELL_SIZE * (1 / 4);
         }
         this.pinText.y = this.pinSprite.y;
         // this.border.drawRect(0, 0, this.width, this.height);

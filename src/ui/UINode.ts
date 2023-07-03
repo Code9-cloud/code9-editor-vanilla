@@ -57,7 +57,7 @@ export default class UINode {
         let maxWidth = this.width;
         for (pin of node.outputs){
             i += 1;
-            let curr_pin = new UIPin(pin, this.width - 10,i * 10);
+            let curr_pin = new UIPin(pin, this.width,i * 10);
             this.outputs.push(curr_pin);
             this.ui_pin_map.set(pin.id, curr_pin);
             this.container.addChild(curr_pin.container);

@@ -5,6 +5,7 @@ const { SourceMapDevToolPlugin } = require("webpack");
 //    "build": "flow-remove-types src/ -d dist/",
 //    "watch": "npm-watch build",
 module.exports = {
+    mode: 'development',
     entry: './src/main.ts',
     module: {
         rules: [
