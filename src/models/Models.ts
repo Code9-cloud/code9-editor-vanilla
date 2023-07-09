@@ -101,6 +101,16 @@ export class Pin {
     }
 }
 
+export class MenuItem {
+    text: string;
+    sub_items: MenuItem[];
+    constructor(text: string, sub_items: MenuItem[]){
+        this.text = text;
+        this.sub_items  = sub_items;
+    }
+}
+
+
 export class Path {
     in_node: string;
     in_pin: string;
