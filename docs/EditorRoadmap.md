@@ -19,31 +19,31 @@
 
 # Redo
 
-1. Create a layout based views using PIXI --> Android's Approach of View, ViewGroup & Layouts
+1. Create a layout based views using PIXI --> Android's Approach of View, ViewGroup & Layouts - 27
    1. Horizontal List Layout (Alignment left / right, elements with left alignment must be first, and right must be at end)
    2. Vertical List Layout (Alignment top / bottom)
    3. Grid Layout ??
    4. Overlay components with transparency ??
    5. Allow size adjustments through borders of components that are adjustable
    6. Allow Scrolling of elements
-2. Menubar
+2. Menubar- 30
    1. Menu Items
    2. Drop down sub menu
    3. Side load sub sub menu
    4. Optional Icons
-3. Toolbar
-4. Side Navigation (Icons only)
+3. Toolbar - 4
+4. Side Navigation (Icons only) - 7
    1. Icons
    2. On Hover Description
    3. On Click navigate side panel / Open or close or switch bottom pop up menus
-5. Side Panels
+5. Side Panels - 11
    1. Render Context specific info in panel
    2. Can have sub segments
-6. Bottom Status Bar
+6. Bottom Status Bar ??
    1. Context Specific, features yet to think, but VCS etc can be put here
-7. Bottom Pop up menu
+7. Bottom Pop up menu ??
    1. Context Specific, depends on navigated item from side nav or bottom bar.
-8. Main Panel | Graph Editor
+8. Main Panel | Graph Editor - 25
    1. Render Nodes
       1. Render Header if required
       2. Render centered icon if operator
@@ -58,4 +58,4 @@
    6. Allow creation of reroute node for better graphs
    7. Allow Zooming in out of graph
    8. Allow Load and Save
-9. Allow Undo, Redo
+9. Allow Undo, Redo - 29
