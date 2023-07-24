@@ -14,6 +14,13 @@ export default class PixiUserInterface {
     uieditor: UIEditor;
     constructor(document) {
         this.app = new PIXI.Application();
+        this.app.renderer = PIXI.autoDetectRenderer({
+            width: 1920,
+            height: 1080,
+            antialias: true,
+            resolution: 1,
+            autoDensity: true,
+        });
         document.body.style.margin = '0';
         this.app.renderer.view.style.position = 'absolute';
         this.app.renderer.view.style.display = 'block';

@@ -33,8 +33,9 @@ export default class UILeftSideBarHighlighter {
     // sidebar.beginFill(0xFFFFFF);
     // sidebar.drawRect(0, menuBarHeight, sidebarWidth, window.innerHeight - menuBarHeight);
     // sidebar.endFill();
-    this.border.beginFill(0x00FF00); 
-    this.border.drawRect(this.x, this.y, this.leftsidebarhighlighterWidth, this.leftsidebarHeight);
+    let color = '#00FF00';
+    this.border.beginFill(color);
+    this.border.drawRect(0, 0, this.leftsidebarhighlighterWidth, this.leftsidebarHeight);
     this.border.endFill();
     // this.border.drawRect(0, 0, this.leftsidebarWidth + this.adjustWidth, this.leftsidebarHeight);
     this.container.addChild(this.border);

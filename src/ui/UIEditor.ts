@@ -72,7 +72,7 @@ export default class UIEditor {
     this.leftsidebar_y = this.y + this.menubar_height;
     this.leftsidebar_height = window.innerHeight - this.menubar_height - this.statusbar_height;
     this.leftsidebar = new UILeftSideBar(this.leftsidebar_x,this.leftsidebar_y, this.leftsidebar_width, this.leftsidebar_height, this.container, sidebar_items);
-    this.leftsidebarhighlighter = new UILeftSideBarHighlighter(this.leftsidebar_x + this.leftsidebar_width ,this.leftsidebar_y,this.leftsidebar_height, 20,this.container);
+    this.leftsidebarhighlighter = new UILeftSideBarHighlighter(this.leftsidebar_x + this.leftsidebar_width, this.leftsidebar_y,20, this.leftsidebar_height,this.container);
     this.rightsidebar_x = this.x + this.menubar_width-this.rightsidebar_width;
     this.rightsidebar_y = this.y + this.menubar_height;
     this.rightsidebar_height = window.innerHeight - this.menubar_height - this.statusbar_height;
@@ -123,9 +123,9 @@ export default class UIEditor {
 
             }
         } else {
-            // Check if current curson position overlaps sidebar
+            // Check if current cursor position overlaps sidebar
             //console.log(Math.abs(ev.clientX - (this.leftsidebar_width + this.x)));
-            if (Math.abs(ev.clientX - (this.leftsidebar_width + this.x)) < 2) {
+            if (Math.abs(ev.clientX - (this.leftsidebar_width + this.x + this.activitybar_width)) < 2) {
                 this.isOverlappingLeftSidebar = true;
                 // console.log(ev.clientX);
                 // console.log(ev.clientY);

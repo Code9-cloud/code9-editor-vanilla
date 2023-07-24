@@ -55,7 +55,7 @@ export default class UILeftSideBar {
       sideMenuItem.draw();
     }
     this.mask.beginFill(0xFFFFFF);
-    this.mask.drawRect(0,0, this.leftsidebarWidth + this.adjustWidth, this.leftsidebarHeight);
+    this.mask.drawRect(this.x,this.y, this.leftsidebarWidth + this.adjustWidth, this.leftsidebarHeight);
     this.mask.endFill();
     this.container.mask = this.mask;
 
@@ -63,13 +63,12 @@ export default class UILeftSideBar {
   }
 
   redraw() {
-    this.border.beginFill(0xc0c0c0); 
+    this.border.beginFill('#c0c0c0');
     this.border.drawRect(0, 0, this.leftsidebarWidth + this.adjustWidth, this.leftsidebarHeight);
     this.border.endFill();
-    this.mask.beginFill(0xffffff); 
-    this.mask.drawRect(0, 0, this.leftsidebarWidth + this.adjustWidth, this.leftsidebarHeight);
+    this.mask.beginFill(0xffffff);
+    this.mask.drawRect(this.x, this.y, this.leftsidebarWidth + this.adjustWidth, this.leftsidebarHeight);
     this.mask.endFill();
-
   }
 
   clear() {
